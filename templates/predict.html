@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Predict | DynamicAirFare</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #FFF8DC 0%, #F5DEB3 50%, #FFE4B5 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #5D4037;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #D2691E 0%, #DEB887 50%, #F4A460 100%);
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav a:hover, .nav a.active {
+      background: rgba(255, 215, 0, 0.8);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .page-title {
+      text-align: center;
+      font-size: 36px;
+      font-weight: bold;
+      color: #8B4513;
+      margin-bottom: 40px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .predict-form {
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF8DC 100%);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(139, 69, 19, 0.2);
+      margin-bottom: 40px;
+      border: 3px solid #DEB887;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-label {
+      font-weight: bold;
+      color: #8B4513;
+      margin-bottom: 8px;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-control {
+      padding: 15px;
+      border: 2px solid #DEB887;
+      border-radius: 10px;
+      font-size: 16px;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #FFD700;
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+      outline: none;
+    }
+
+    .btn-predict {
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      color: #8B4513;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-predict:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    }
+
+    .results-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .result-card {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(139, 69, 19, 0.15);
+    }
+
+    .result-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #8B4513;
+      margin-bottom: 20px;
+      text-align: center;
+      border-bottom: 3px solid #FFD700;
+      padding-bottom: 10px;
+    }
+
+    .prediction-details {
+      background: linear-gradient(135deg, #FFF8DC 0%, #FFE4B5 100%);
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .detail-item {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(139, 69, 19, 0.1);
+      border-left: 4px solid #FFD700;
+    }
+
+    .detail-label {
+      font-weight: bold;
+      color: #8B4513;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .detail-value {
+      color: #5D4037;
+      font-size: 16px;
+    }
+
+    .chart-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .chart-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .best-days-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .day-card {
+      background: linear-gradient(135deg, #90EE90 0%, #98FB98 100%);
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(144, 238, 144, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .day-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(144, 238, 144, 0.4);
+    }
+
+    .day-date {
+      font-weight: bold;
+      color: #2E7D32;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .day-name {
+      color: #388E3C;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .day-price {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1B5E20;
+    }
+
+    .airline-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .airline-table th {
+      background: linear-gradient(135deg, #D2691E 0%, #DEB887 100%);
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    .airline-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #F5DEB3;
+    }
+
+    .airline-table tr:hover {
+      background-color: #FFF8DC;
+    }
+
+    .best-price {
+      background: linear-gradient(135deg, #90EE90 0%, #98FB98 100%);
+      color: #1B5E20;
+      padding: 4px 8px;
+      border-radius: 15px;
+      font-weight: bold;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #DEB887;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      color: #8B4513;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab:hover {
+      color: #D2691E;
+    }
+
+    .tab.active {
+      border-bottom: 3px solid #FFD700;
+      color: #D2691E;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .best-days-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .nav {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">DynamicAirFare</div>
+      <nav class="nav">
+        <a href="{{ url_for('welcome') }}">Home</a>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('predict') }}" class="active">Predict</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="page-title">Flight Fare Predictor</h1>
+
+    <div class="predict-form">
+      <form method="POST">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="source" class="form-label">Source City</label>
+            <select name="source" id="source" class="form-control" required>
+              <option value="">Select Source</option>
+              {% for s in sources %}
+                <option value="{{ s }}" {% if s==selected_source %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="destination" class="form-label">Destination City</label>
+            <select name="destination" id="destination" class="form-control" required>
+              <option value="">Select Destination</option>
+              {% for d in destinations %}
+                <option value="{{ d }}" {% if d==selected_destination %}selected{% endif %}>{{ d }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="date" class="form-label">Travel Date</label>
+            <input type="date" name="date" id="date" class="form-control" value="{{ selected_date or '' }}" required>
+          </div>
+        </div>
+
+        <div style="text-align: center;">
+          <button type="submit" class="btn-predict">Predict Fare</button>
+        </div>
+      </form>
+    </div>
+
+    {% if prediction_details %}
+    <div class="results-section">
+      <!-- Prediction Details -->
+      <div class="result-card">
+        <div class="result-title">Prediction Analysis</div>
+        
+        <div class="tabs">
+          <button class="tab active" onclick="openTab(event, 'summary')">Summary</button>
+          <button class="tab" onclick="openTab(event, 'airlines')">Airlines</button>
+        </div>
+        
+        <div id="summary" class="tab-content active">
+          <div class="prediction-details">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <div class="detail-label">Route</div>
+                <div class="detail-value">{{ prediction_details.route }}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Travel Date</div>
+                <div class="detail-value">{{ prediction_details.travel_date }} ({{ prediction_details.day_of_week }})</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Days Until Travel</div>
+                <div class="detail-value">{{ prediction_details.days_left }} days</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Base Price Range</div>
+                <div class="detail-value">{{ prediction_details.price_range }}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Best Airline</div>
+                <div class="detail-value">{{ prediction_details.best_airline }} - ₹{{ prediction_details.best_price }}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Potential Savings</div>
+                <div class="detail-value">₹{{ prediction_details.savings }}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Time Factor</div>
+                <div class="detail-value">{{ prediction_details.time_factor }}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Seasonal Factor</div>
+                <div class="detail-value">{{ prediction_details.seasonal_factor }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div id="airlines" class="tab-content">
+          <table class="airline-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Airline</th>
+                <th>Predicted Price</th>
+                <th>Confidence</th>
+                <th>Data Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for airline in airline_predictions %}
+              <tr>
+                <td><strong>{{ loop.index }}</strong></td>
+                <td><strong>{{ airline.airline }}</strong></td>
+                <td>
+                  {% if loop.index == 0 %}
+                    <span class="best-price">₹{{ airline.price }}</span>
+                  {% else %}
+                    ₹{{ airline.price }}
+                  {% endif %}
+                </td>
+                <td>{{ airline.confidence }}%</td>
+                <td>{{ airline.data_points }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Airline Predictions Chart -->
+      <div class="result-card">
+        <div class="result-title">Airline Price Predictions</div>
+        <div class="chart-container">
+          <img src="data:image/png;base64,{{ airline_chart }}" class="chart-img" alt="Airline Predictions">
+        </div>
+      </div>
+
+      <!-- Best Days to Travel -->
+      <div class="result-card">
+        <div class="result-title">Best Days to Travel</div>
+        <div class="chart-container">
+          <img src="data:image/png;base64,{{ trend_chart }}" class="chart-img" alt="Price Trend">
+        </div>
+        
+        <div class="best-days-grid">
+          {% for day in best_days %}
+          <div class="day-card">
+            <div class="day-date">{{ day.date }}</div>
+            <div class="day-name">{{ day.day }}</div>
+            <div class="day-price">₹{{ day.price }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <script>
+    // Set minimum date to today
+    document.addEventListener('DOMContentLoaded', function() {
+      const dateInput = document.getElementById('date');
+      if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
+        if (!dateInput.value) {
+          dateInput.value = today;
+        }
+      }
+    });
+    
+    // Tab functionality
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      
+      tabcontent = document.getElementsByClassName("tab-content");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].classList.remove("active");
+      }
+      
+      tablinks = document.getElementsByClassName("tab");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+      }
+      
+      document.getElementById(tabName).classList.add("active");
+      evt.currentTarget.classList.add("active");
+    }
+  </script>
+</body>
+</html>

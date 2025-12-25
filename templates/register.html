@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register | DynamicAirFare</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #FFF8DC 0%, #F5DEB3 50%, #FFE4B5 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #5D4037;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #D2691E 0%, #DEB887 50%, #F4A460 100%);
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav a:hover, .nav a.active {
+      background: rgba(255, 215, 0, 0.8);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .register-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .register-card {
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF8DC 100%);
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(139, 69, 19, 0.2);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      border: 3px solid #DEB887;
+    }
+
+    .register-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #8B4513;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: bold;
+      color: #8B4513;
+      margin-bottom: 8px;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #DEB887;
+      border-radius: 10px;
+      font-size: 16px;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #FFD700;
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+      outline: none;
+    }
+
+    .btn-register {
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      color: #8B4513;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn-register:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    }
+
+    .error-message {
+      background: rgba(255, 136, 136, 0.2);
+      color: #D32F2F;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #FF5252;
+    }
+
+    .login-link {
+      margin-top: 25px;
+      font-size: 16px;
+      color: #8B4513;
+    }
+
+    .login-link a {
+      color: #DAA520;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .login-link a:hover {
+      color: #FFD700;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .nav {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .register-card {
+        padding: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">DynamicAirFare</div>
+      <nav class="nav">
+        <a href="{{ url_for('welcome') }}">Home</a>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('predict') }}">Predict</a>
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}" class="active">Register</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="register-container">
+    <div class="register-card">
+      <h2 class="register-title">Create Your Account</h2>
+      
+      {% if error %}
+      <div class="error-message">{{ error }}</div>
+      {% endif %}
+      
+      <form method="POST">
+        <div class="form-group">
+          <label for="name" class="form-label">Full Name</label>
+          <input type="text" name="name" id="name" class="form-control" placeholder="Enter your full name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="phone" class="form-label">Phone Number</label>
+          <input type="tel" name="phone" id="phone" class="form-control" placeholder="Enter your phone number" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" name="username" id="username" class="form-control" placeholder="Choose a username" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" name="password" id="password" class="form-control" placeholder="Create a password" required>
+        </div>
+        
+        <button type="submit" class="btn-register">Register</button>
+      </form>
+      
+      <div class="login-link">
+        Already have an account? <a href="{{ url_for('login') }}">Login here</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
